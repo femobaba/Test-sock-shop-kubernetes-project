@@ -1,3 +1,8 @@
+provider "aws" {
+  profile = "Groupaccess"
+  region = "us-west-2"  
+}
+
 locals {
   project-name = "us-team-sock-shop"
   env1         = "stage"
