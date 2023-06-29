@@ -51,6 +51,17 @@ resource "aws_subnet" "prt_sn2" {
   }
 }
 
+# Create Private Subnet 03
+resource "aws_subnet" "prt_sn3" {
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.priv_sn3_cidr_block
+  availability_zone = var.az3
+
+  tags = {
+    Name = var.prt_sn3_name
+  }
+}
+
 # create internet gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
@@ -111,6 +122,12 @@ resource "aws_route_table_association" "prt_rta1" {
 # provision private subnet2 attached to private route table
 resource "aws_route_table_association" "prt_rta2" {
   subnet_id      = aws_subnet.prt_sn2.id
+  route_table_id = aws_route_table.prt_RT.id
+}
+
+# Private subnet3 attached to private route table
+resource "aws_route_table_association" "prt_rta3" {
+  subnet_id      = aws_subnet.prt_sn3.id
   route_table_id = aws_route_table.prt_RT.id
 }
 
