@@ -28,3 +28,23 @@ module "vpc" {
   nat-gateway_name     = "${local.project-name}-ngw"
   prt_RT_name          = "${local.project-name}-prt-rt"
   pub_RT_name          = "${local.project-name}-pub-rt"
+
+  #Key name
+  key_name = "${local.project-name}-keypair"
+
+  #Security Group
+  ansible_sg_name  = "${local.project-name}-ansible-sg"
+  jenkins_sg_name  = "${local.project-name}-jenkins-sg"
+  master_sg_name   = "${local.project-name}-master-sg"
+  worker_sg_name   = "${local.project-name}-worker-sg"
+  port_ssh         = 22
+  port_http        = 80
+  port_jenkins     = 8080
+  k8s_port         = 0
+  k8s_port2        = 65535
+  k8s_worker_port  = 10250
+  k8s_worker_port2 = 30000
+  k8s_worker_port3 = 32767
+  all_cidr         = "0.0.0.0/0"
+  egress           = 0
+}
