@@ -1,0 +1,30 @@
+locals {
+  project-name = "us-team-sock-shop"
+  env1         = "stage"
+  env2         = "prod" 
+}
+
+# Infrastructure module
+module "vpc" {
+  source               = "./module/vpc"
+  vpc_name             = "${local.project-name}-vpc"
+  pub_sn1_name         = "${local.project-name}-pub-sn1"
+  pub_sn2_name         = "${local.project-name}-pub-sn2"
+  prt_sn1_name         = "${local.project-name}-prt-sn1"
+  prt_sn2_name         = "${local.project-name}-prt-sn2"
+  prt_sn3_name         = "${local.project-name}-prt-sn3"
+  vpc_instance_tenancy = "default"
+  all-cidr2            = "0.0.0.0/0"
+  cidr_block_vpc       = "10.0.0.0/16"
+  pub_sn1_cidr_block   = "10.0.1.0/24"
+  pub_sn2_cidr_block   = "10.0.2.0/24"
+  priv_sn1_cidr_block  = "10.0.3.0/24"
+  priv_sn2_cidr_block  = "10.0.4.0/24"
+  priv_sn3_cidr_block  = "10.0.5.0/24"
+  az1                  = "us-west-2a"
+  az2                  = "us-west-2b"
+  az3                  = "us-west-2c"
+  igw_name             = "${local.project-name}-igw"
+  nat-gateway_name     = "${local.project-name}-ngw"
+  prt_RT_name          = "${local.project-name}-prt-rt"
+  pub_RT_name          = "${local.project-name}-pub-rt"
