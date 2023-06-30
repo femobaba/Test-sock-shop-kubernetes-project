@@ -1,12 +1,12 @@
 provider "aws" {
   profile = "Groupaccess"
-  region = "us-west-2"  
+  region  = "us-west-2"
 }
 
 locals {
   project-name = "us-team-sock-shop"
   env1         = "stage"
-  env2         = "prod" 
+  env2         = "prod"
 }
 
 # Infrastructure module
@@ -52,4 +52,15 @@ module "vpc" {
   k8s_worker_port3 = 32767
   all_cidr         = "0.0.0.0/0"
   egress           = 0
+}
+
+module "master_node" {
+  source         = "./module/master_node"
+  ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
+  instance_type  = "t2.medium"
+  master-node-sg = module.vpc.master_sg_id
+  subnet_id      = module.vpc.pubsub1_id
+  keypair_name   = module.vpc.keypair
+  instance_count = 3
+  instance_name  = "${local.project-name}-master_node"
 }
