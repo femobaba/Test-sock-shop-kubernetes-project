@@ -63,4 +63,14 @@ module "jenkins" {
   jenkins_sg_name  = module.vpc.jenkins_sg_id
 }
 
- 
+#bastion-host module
+module "bastion" {
+  source              = "./module/bastion-host"
+  bastion-name        = "${local.project-name}-bastion-host"
+  ubuntu_ami          = "ami-0ecc74eca1d66d8a6"
+  instance_type_micro = "t2.micro"
+  subnet_id           = module.vpc.pubsub1_id
+  security_group      = module.vpc.ansible_sg_id
+  keypair_name        = module.vpc.keypair
+  private_key         = module.vpc.private-key
+}
