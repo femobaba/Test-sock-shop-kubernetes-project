@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #haproxy1 variable
 variable "keypair" {}
 variable "ami" {}
@@ -15,3 +16,6 @@ variable "master4" {}
 variable "master5" {}
 variable "master6" {}
 variable "name-tags2" {}
+=======
+variable "instance_type_t2" {}
+>>>>>>> 3c5755e39f331b0f8a17b169110777ffe805f7b4

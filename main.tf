@@ -53,3 +53,27 @@ module "vpc" {
   all_cidr         = "0.0.0.0/0"
   egress           = 0
 }
+<<<<<<< HEAD
+=======
+
+module "jenkins" {
+  source           = "./module/jenkins"
+  instance_type_t2 = var.instance_type_t2
+  keypair_name     = module.vpc.keypair
+  prt_sn1          = module.vpc.prtsub1_id
+  jenkins_name     = "${local.project-name}-jenkins"
+  jenkins_sg_name  = module.vpc.jenkins_sg_id
+}
+
+#bastion-host module
+module "bastion" {
+  source              = "./module/bastion-host"
+  bastion-name        = "${local.project-name}-bastion-host"
+  ubuntu_ami          = "ami-0ecc74eca1d66d8a6"
+  instance_type_micro = "t2.micro"
+  subnet_id           = module.vpc.pubsub1_id
+  security_group      = module.vpc.ansible_sg_id
+  keypair_name        = module.vpc.keypair
+  private_key         = module.vpc.private-key
+}
+>>>>>>> 3c5755e39f331b0f8a17b169110777ffe805f7b4
