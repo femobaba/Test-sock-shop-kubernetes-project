@@ -7,7 +7,7 @@ variable "HAproxy_sg" {}
 variable "master1" {}
 variable "master2" {}
 variable "master3" {}
-variable "name-tags" {}
+variable "name-tags" {}  
 
 #haproxy-backup variable
 variable "prtsub2_id" {}
