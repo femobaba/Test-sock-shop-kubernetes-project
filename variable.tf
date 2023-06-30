@@ -1,0 +1,1 @@
+variable "instance_type_t2" {}
