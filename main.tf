@@ -54,6 +54,15 @@ module "vpc" {
   egress           = 0
 }
 
+module "jenkins" {
+  source           = "./module/jenkins"
+  instance_type_t2 = var.instance_type_t2
+  keypair_name     = module.vpc.keypair
+  prt_sn1          = module.vpc.prtsub1_id
+  jenkins_name     = "${local.project-name}-jenkins"
+  jenkins_sg_name  = module.vpc.jenkins_sg_id
+}
+
 #bastion-host module
 module "bastion" {
   source              = "./module/bastion-host"
