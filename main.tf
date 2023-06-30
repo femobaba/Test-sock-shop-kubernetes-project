@@ -53,8 +53,6 @@ module "vpc" {
   all_cidr         = "0.0.0.0/0"
   egress           = 0
 }
-<<<<<<< HEAD
-=======
 
 module "jenkins" {
   source           = "./module/jenkins"
@@ -76,4 +74,15 @@ module "bastion" {
   keypair_name        = module.vpc.keypair
   private_key         = module.vpc.private-key
 }
->>>>>>> 3c5755e39f331b0f8a17b169110777ffe805f7b4
+
+#master_node module
+module "master_node" {
+  source         = "./module/master_node"
+  ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
+  instance_type  = "t2.medium"
+  master-node-sg = module.vpc.master_sg_id
+  subnet_id      = module.vpc.pubsub1_id
+  keypair_name   = module.vpc.keypair
+  instance_count = 3
+  instance_name  = "${local.project-name}-master_node"
+}
