@@ -1,12 +1,12 @@
 provider "aws" {
   profile = "Groupaccess"
-  region = "us-west-2"  
+  region  = "us-west-2"
 }
 
 locals {
   project-name = "us-team-sock-shop"
   env1         = "stage"
-  env2         = "prod" 
+  env2         = "prod"
 }
 
 # Infrastructure module
@@ -52,4 +52,16 @@ module "vpc" {
   k8s_worker_port3 = 32767
   all_cidr         = "0.0.0.0/0"
   egress           = 0
+}
+
+#bastion-host module
+module "bastion" {
+  source              = "./module/bastion-host"
+  bastion-name        = "${local.project-name}-bastion-host"
+  ubuntu_ami          = "ami-0ecc74eca1d66d8a6"
+  instance_type_micro = "t2.micro"
+  subnet_id           = module.vpc.pubsub1_id
+  security_group      = module.vpc.ansible_sg_id
+  keypair_name        = module.vpc.keypair
+  private_key         = module.vpc.private-key
 }
