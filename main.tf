@@ -60,7 +60,8 @@ module "jenkins" {
   keypair_name     = module.vpc.keypair
   prt_sn1          = module.vpc.prtsub1_id
   jenkins_name     = "${local.project-name}-jenkins"
-  jenkins_sg_name  = module.vpc.jenkins_sg_id
+  jenkins_sg       = module.vpc.jenkins_sg_id
+  elb_name         = "${local.project-name}-elb"
 }
 
 #bastion-host module
