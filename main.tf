@@ -127,3 +127,9 @@ module "haproxy-servers" {
   name-tags     = "${local.project-name}-haproxy1"
   name-tags2    = "${local.project-name}-haproxy-backup"
 }
+
+module "ssl-certf" {
+  source = "./module/route_53"
+  domain_name = "praisepeace.link"
+  domain_name2 = "*praisepeace.link"
+}
