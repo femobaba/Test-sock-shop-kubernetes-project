@@ -76,6 +76,27 @@ module "bastion" {
   private_key         = module.vpc.private-key
 }
 
+#create ansible server
+module "ansible" {
+  source         = "./module/ansible"
+  ami            = "ami-0ecc74eca1d66d8a6"
+  instance_type  = "t2.micro"
+  subnet_id      = module.vpc.prtsub1_id
+  ansible-sg-id  = module.vpc.ansible_sg_id
+  keys           = module.vpc.keypair
+  prv_key        = module.vpc.private-key
+  HAproxy1_IP    = module.haproxy-servers.HAproxy_private_IP
+  HAproxy2_IP    = module.haproxy-servers.HAproxybackup_private_IP
+  master1_IP     = module.master-nodes.master-node-ip[0]
+  master2_IP     = module.master-nodes.master-node-ip[1]
+  master3_IP     = module.master-nodes.master-node-ip[2]
+  worker1_IP     = module.worker-nodes.worker-node-ip[0]
+  worker2_IP     = module.worker-nodes.worker-node-ip[1]
+  worker3_IP     = module.worker-nodes.worker-node-ip[2]
+  bastion-host   = module.bastion.bastion-ip
+  ansible_server = "${local.project-name}-ansible-server"
+}
+
 #master_node module
 module "master_node" {
   source         = "./module/master_node"
