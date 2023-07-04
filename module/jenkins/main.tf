@@ -1,6 +1,6 @@
 #Create Jenkins Server using a t2.medium redhat ami 
 resource "aws_instance" "jenkins-server" {
-  ami                         = "ami-026ebd4cfe2c043b2"
+  ami                         = "ami-0e4841c3bb7d47d69"
   instance_type               = var.instance_type_t2
   vpc_security_group_ids      = [var.jenkins_sg]
   subnet_id                   = var.prt_sn1
