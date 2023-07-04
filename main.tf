@@ -143,5 +143,5 @@ module "haproxy-servers" {
 module "ssl-certf" {
   source = "./module/route_53"
   domain_name = "praisepeace.link"
-  domain_name2 = "*praisepeace.link"
+  domain_name2 = "*.praisepeace.link"
 }
