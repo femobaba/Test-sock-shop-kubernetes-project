@@ -22,19 +22,19 @@ resource "aws_instance" "ansible_server" {
   }
 }
 
-#create null resource to copy playbooks directory into ansible server
-resource "null_resource" "copy-playbooks" {
-  connection {
-    type                = "ssh"
-    host                = aws_instance.ansible_server.private_ip
-    user                = "ubuntu"
-    private_key         = var.prv_key
-    bastion_host        = var.bastion-host
-    bastion_user        = "ubuntu"
-    bastion_private_key = var.prv_key
-  }
-  provisioner "file" {
-    source      = "./module/ansible/playbooks"
-    destination = "/home/ubuntu/playbooks"
-  }
-}
+# #create null resource to copy playbooks directory into ansible server
+# resource "null_resource" "copy-playbooks" {
+#   connection {
+#     type                = "ssh"
+#     host                = aws_instance.ansible_server.private_ip
+#     user                = "ubuntu"
+#     private_key         = var.prv_key
+#     bastion_host        = var.bastion-host
+#     bastion_user        = "ubuntu"
+#     bastion_private_key = var.prv_key
+#   }
+#   provisioner "file" {
+#     source      = "./module/ansible/playbooks"
+#     destination = "/home/ubuntu/playbooks"
+#   }
+# }
