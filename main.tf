@@ -123,7 +123,7 @@ module "worker_node" {
 
 #create haproxy module 
 module "haproxy-servers" {
-  source        = "./module/HAproxy"
+  source        = "./module/haproxy"
   keypair       = module.vpc.keypair
   ami           = "ami-0ecc74eca1d66d8a6"
   instance_type = "t2.medium"
