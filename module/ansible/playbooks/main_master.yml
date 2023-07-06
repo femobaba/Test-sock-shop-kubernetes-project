@@ -1,7 +1,7 @@
-- hosts: Main_master
+- hosts: main_master
   become: yes
   vars_files: 
-    - /home/ubuntu/playbooks/ha-ip.yml
+    - /home/ubuntu/ha-ip.yml
 
   tasks:
     
