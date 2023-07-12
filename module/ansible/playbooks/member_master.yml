@@ -1,4 +1,4 @@
-- hosts: Member_master
+- hosts: member_master
   become: true
   gather_facts: true
   tasks:
