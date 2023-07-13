@@ -141,7 +141,26 @@ module "haproxy-servers" {
 }
 
 module "ssl-certf" {
-  source = "./module/route_53"
-  domain_name = "praisepeace.link"
+  source       = "./module/route_53"
+  domain_name  = "praisepeace.link"
   domain_name2 = "*.praisepeace.link"
+}
+
+module "prometheus" {
+  source             = "./module/prometheus"
+  prometheus_sg_name = module.vpc.master_sg_id
+  subnets            = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
+  vpc_id = module.vpc.vpc_id
+  instance = module.worker_node.worker_ip
+
+}
+
+module "grafana" {
+  source          = "./module/grafana"
+  grafana_sg_name = module.vpc.master_sg_id
+  subnets         = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
+  vpc_id = module.vpc.vpc_id
+  instance = module.worker_node.worker_ip
+  
+
 }
