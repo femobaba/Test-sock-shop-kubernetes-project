@@ -1,14 +1,16 @@
 variable "vpc_name" {}
-variable "pub_sn1_name" {}
 variable "prt_sn1_name" {}
 variable "prt_sn2_name" {}
 variable "prt_sn3_name" {}
+variable "pub_sn1_name" {}
 variable "pub_sn2_name" {}
+variable "pub_sn3_name" {}
 variable "vpc_instance_tenancy" {}
 variable "all-cidr2" {}
 variable "cidr_block_vpc" {}
 variable "pub_sn1_cidr_block" {}
 variable "pub_sn2_cidr_block" {}
+variable "pub_sn3_cidr_block" {}
 variable "priv_sn1_cidr_block" {}
 variable "priv_sn2_cidr_block" {}
 variable "priv_sn3_cidr_block" {}

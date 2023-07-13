@@ -15,6 +15,7 @@ module "vpc" {
   vpc_name             = "${local.project-name}-vpc"
   pub_sn1_name         = "${local.project-name}-pub-sn1"
   pub_sn2_name         = "${local.project-name}-pub-sn2"
+  pub_sn3_name         = "${local.project-name}-pub-sn3"
   prt_sn1_name         = "${local.project-name}-prt-sn1"
   prt_sn2_name         = "${local.project-name}-prt-sn2"
   prt_sn3_name         = "${local.project-name}-prt-sn3"
@@ -23,9 +24,10 @@ module "vpc" {
   cidr_block_vpc       = "10.0.0.0/16"
   pub_sn1_cidr_block   = "10.0.1.0/24"
   pub_sn2_cidr_block   = "10.0.2.0/24"
-  priv_sn1_cidr_block  = "10.0.3.0/24"
-  priv_sn2_cidr_block  = "10.0.4.0/24"
-  priv_sn3_cidr_block  = "10.0.5.0/24"
+  pub_sn3_cidr_block   = "10.0.3.0/24"
+  priv_sn1_cidr_block  = "10.0.4.0/24"
+  priv_sn2_cidr_block  = "10.0.5.0/24"
+  priv_sn3_cidr_block  = "10.0.6.0/24"
   az1                  = "us-west-2a"
   az2                  = "us-west-2b"
   az3                  = "us-west-2c"
@@ -141,7 +143,33 @@ module "haproxy-servers" {
 }
 
 module "ssl-certf" {
-  source = "./module/route_53"
-  domain_name = "praisepeace.link"
+  source       = "./module/route_53"
+  domain_name  = "praisepeace.link"
   domain_name2 = "*.praisepeace.link"
+}
+
+# create productn_lb
+module "prod_lb" {
+  source          = "./module/prod_lb"
+  subnets         = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  sg              = module.vpc.master_sg_id
+  vpc_id          = module.vpc.vpc_id
+  vpc             = module.vpc.keypair
+  certificate_arn = module.ssl-certf
+  instance1       = module.worker_node.worker_ip[0]
+  instance2       = module.worker_node.worker_ip[1]
+  instance3       = module.worker_node.worker_ip[2]
+}
+
+# create stage_lb
+module "stage_lb" {
+  source          = "./module/stage_lb"
+  subnets         = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  sg              = module.vpc.master_sg_id
+  vpc_id          = module.vpc.vpc_id
+  vpc             = module.vpc.keypair
+  certificate_arn = module.ssl-certf
+  instance1       = module.worker_node.worker_ip[0]
+  instance2       = module.worker_node.worker_ip[1]
+  instance3       = module.worker_node.worker_ip[2]
 }
