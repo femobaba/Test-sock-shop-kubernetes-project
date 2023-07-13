@@ -85,14 +85,14 @@ module "ansible" {
   ansible-sg-id  = module.vpc.ansible_sg_id
   keys           = module.vpc.keypair
   prv_key        = module.vpc.private-key
-  HAproxy1_IP    = module.haproxy-servers.prod_HAProxy_IP
-  HAproxy2_IP    = module.haproxy-servers.prod_HAProxy-backup_IP
-  master1_IP     = module.master_node.master_ip[0]
-  master2_IP     = module.master_node.master_ip[1]
-  master3_IP     = module.master_node.master_ip[2]
-  worker1_IP     = module.worker_node.worker_ip[0]
-  worker2_IP     = module.worker_node.worker_ip[1]
-  worker3_IP     = module.worker_node.worker_ip[2]
+  HAproxy1_IP    = module.haproxy-servers.HAproxy_private_IP
+  HAproxy2_IP    = module.haproxy-servers.HAproxybackup_private_IP
+  master1_IP     = module.master-nodes.master-node-ip[0]
+  master2_IP     = module.master-nodes.master-node-ip[1]
+  master3_IP     = module.master-nodes.master-node-ip[2]
+  worker1_IP     = module.worker-nodes.worker-node-ip[0]
+  worker2_IP     = module.worker-nodes.worker-node-ip[1]
+  worker3_IP     = module.worker-nodes.worker-node-ip[2]
   bastion-host   = module.bastion.bastion-ip
   ansible_server = "${local.project-name}-ansible-server"
 }
@@ -103,22 +103,10 @@ module "master_node" {
   ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
   instance_type  = "t2.medium"
   master-node-sg = module.vpc.master_sg_id
-  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
+  subnet_id      = module.vpc.pubsub1_id
   keypair_name   = module.vpc.keypair
   instance_count = 3
   instance_name  = "${local.project-name}-master_node"
-}
-
-#worker_node module
-module "worker_node" {
-  source         = "./module/worker_node"
-  ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
-  instance_type  = "t2.medium"
-  worker-node-sg = module.vpc.worker_server_sg_id
-  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
-  keypair_name   = module.vpc.keypair
-  instance_count = 3
-  instance_name  = "${local.project-name}-worker_node"
 }
 
 #create haproxy module 
