@@ -130,10 +130,22 @@ module "haproxy-servers" {
   name-tags2    = "${local.project-name}-haproxy-backup"
 }
 
-module "ssl-certf" {
+module "route53" {
   source       = "./module/route_53"
   domain_name  = "praisepeace.link"
   domain_name2 = "*.praisepeace.link"
+  grafana_domain_hosted_zone    = "grafana.praisepeace.link"
+  prometheus_domain_hosted_zone = "prometheus.praisepeace.link"
+  stage_domain_hosted_zone      = "stage.praisepeace.link"
+  prod_domain_name              = "prod.praisepeace.link"
+  # prometheus-lb-dns-name        = 
+  # prometheus-lb-zone-id         = 
+  # grafana-lb-dns-name           = 
+  # grafana-lb-zone-id            = 
+  prod-lb-dns-name              = module.prod_lb.prod-dns-name
+  prod-lb-zone-id               = module.prod_lb.prod-zone-id
+  stage-lb-dns-name             = module.stage_lb.stage-dns-name
+  stage-lb-zone-id              = module.stage_lb.stage-zone-id
 }
 
 # create productn_lb
