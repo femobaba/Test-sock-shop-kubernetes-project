@@ -13,4 +13,4 @@ variable "worker1_IP"{}
 variable "worker2_IP" {}
 variable "worker3_IP" {}
 variable "ansible_server" {}
-# variable "bastion-host" {}
+variable "bastion-host" {}

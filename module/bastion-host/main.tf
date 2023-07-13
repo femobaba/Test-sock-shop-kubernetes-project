@@ -4,7 +4,7 @@ resource "aws_instance" "us-team-bastion" {
   instance_type               = var.instance_type_micro
   subnet_id                   = var.subnet_id
   associate_public_ip_address = true
-  vpc_security_group_ids      = var.security_group
+  vpc_security_group_ids      = [var.security_group]
   key_name                    = var.keypair_name
   user_data                   = <<-EOF
 #!/bin/bash
