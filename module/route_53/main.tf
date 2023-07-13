@@ -10,11 +10,11 @@ resource "aws_route53_record" "k8s_A_record" {
   name    = var.prod_domain_name
   type    = "A"
 
-# alias {
-#     name                   = var.prod-lb-dns-name
-#     zone_id                = var.prod-lb-zone-id
-#     evaluate_target_health = true
-#   }
+alias {
+    name                   = var.prod-lb-dns-name
+    zone_id                = var.prod-lb-zone-id
+    evaluate_target_health = true
+  }
  }
 
 # CREATE A RECORD FOR STAGE ENVIRONMENT
@@ -23,11 +23,11 @@ resource "aws_route53_record" "stage_record" {
   name    = var.stage_domain_hosted_zone
   type    = "A"
 
-# alias {
-#     name                   = var.stage-lb-dns-name
-#     zone_id                = var.stage-lb-zone-id
-#     evaluate_target_health = true
-#   }
+alias {
+    name                   = var.stage-lb-dns-name
+    zone_id                = var.stage-lb-zone-id
+    evaluate_target_health = true
+  }
 
 }
 
@@ -37,11 +37,11 @@ resource "aws_route53_record" "prometheus_record" {
   name    = var.prometheus_domain_hosted_zone
   type    = "A"
 
-# alias {
-#     name                   = var.prometheus-lb-dns-name
-#     zone_id                = var.prometheus-lb-zone-id
-#     evaluate_target_health = true
-# }
+alias {
+    name                   = var.prometheus-lb-dns-name
+    zone_id                = var.prometheus-lb-zone-id
+    evaluate_target_health = true
+}
 
 }
 
@@ -51,11 +51,11 @@ resource "aws_route53_record" "grafana_record" {
   name    = var.grafana_domain_hosted_zone
   type    = "A"
 
-# alias {
-#     name                   = var.grafana-lb-dns-name
-#     zone_id                = var.grafana-lb-zone-id
-#     evaluate_target_health = true
-# }
+alias {
+    name                   = var.grafana-lb-dns-name
+    zone_id                = var.grafana-lb-zone-id
+    evaluate_target_health = true
+}
 
 }
 

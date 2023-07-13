@@ -15,6 +15,7 @@ module "vpc" {
   vpc_name             = "${local.project-name}-vpc"
   pub_sn1_name         = "${local.project-name}-pub-sn1"
   pub_sn2_name         = "${local.project-name}-pub-sn2"
+  pub_sn3_name         = "${local.project-name}-pub-sn3"
   prt_sn1_name         = "${local.project-name}-prt-sn1"
   prt_sn2_name         = "${local.project-name}-prt-sn2"
   prt_sn3_name         = "${local.project-name}-prt-sn3"
@@ -23,9 +24,10 @@ module "vpc" {
   cidr_block_vpc       = "10.0.0.0/16"
   pub_sn1_cidr_block   = "10.0.1.0/24"
   pub_sn2_cidr_block   = "10.0.2.0/24"
-  priv_sn1_cidr_block  = "10.0.3.0/24"
-  priv_sn2_cidr_block  = "10.0.4.0/24"
-  priv_sn3_cidr_block  = "10.0.5.0/24"
+  pub_sn3_cidr_block   = "10.0.3.0/24"
+  priv_sn1_cidr_block  = "10.0.4.0/24"
+  priv_sn2_cidr_block  = "10.0.5.0/24"
+  priv_sn3_cidr_block  = "10.0.6.0/24"
   az1                  = "us-west-2a"
   az2                  = "us-west-2b"
   az3                  = "us-west-2c"
@@ -85,14 +87,14 @@ module "ansible" {
   ansible-sg-id  = module.vpc.ansible_sg_id
   keys           = module.vpc.keypair
   prv_key        = module.vpc.private-key
-  HAproxy1_IP    = module.haproxy-servers.prod_HAProxy_IP
-  HAproxy2_IP    = module.haproxy-servers.prod_HAProxy-backup_IP
-  master1_IP     = module.master_node.master_ip[0]
-  master2_IP     = module.master_node.master_ip[1]
-  master3_IP     = module.master_node.master_ip[2]
-  worker1_IP     = module.worker_node.worker_ip[0]
-  worker2_IP     = module.worker_node.worker_ip[1]
-  worker3_IP     = module.worker_node.worker_ip[2]
+  HAproxy1_IP    = module.haproxy-servers.HAproxy_private_IP
+  HAproxy2_IP    = module.haproxy-servers.HAproxybackup_private_IP
+  master1_IP     = module.master-nodes.master-node-ip[0]
+  master2_IP     = module.master-nodes.master-node-ip[1]
+  master3_IP     = module.master-nodes.master-node-ip[2]
+  worker1_IP     = module.worker-nodes.worker-node-ip[0]
+  worker2_IP     = module.worker-nodes.worker-node-ip[1]
+  worker3_IP     = module.worker-nodes.worker-node-ip[2]
   bastion-host   = module.bastion.bastion-ip
   ansible_server = "${local.project-name}-ansible-server"
 }
@@ -103,22 +105,10 @@ module "master_node" {
   ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
   instance_type  = "t2.medium"
   master-node-sg = module.vpc.master_sg_id
-  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
+  subnet_id      = module.vpc.pubsub1_id
   keypair_name   = module.vpc.keypair
   instance_count = 3
   instance_name  = "${local.project-name}-master_node"
-}
-
-#worker_node module
-module "worker_node" {
-  source         = "./module/worker_node"
-  ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
-  instance_type  = "t2.medium"
-  worker-node-sg = module.vpc.worker_server_sg_id
-  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
-  keypair_name   = module.vpc.keypair
-  instance_count = 3
-  instance_name  = "${local.project-name}-worker_node"
 }
 
 #create haproxy module 
@@ -141,20 +131,45 @@ module "haproxy-servers" {
 }
 
 module "route53" {
-  source = "./module/route_53"
-  domain_name = "praisepeace.link"
+  source       = "./module/route_53"
+  domain_name  = "praisepeace.link"
   domain_name2 = "*.praisepeace.link"
   grafana_domain_hosted_zone    = "grafana.praisepeace.link"
   prometheus_domain_hosted_zone = "prometheus.praisepeace.link"
   stage_domain_hosted_zone      = "stage.praisepeace.link"
   prod_domain_name              = "prod.praisepeace.link"
-  # prometheus-lb-dns-name        =
+  # prometheus-lb-dns-name        = 
   # prometheus-lb-zone-id         = 
   # grafana-lb-dns-name           = 
   # grafana-lb-zone-id            = 
-  # prod-lb-dns-name              = 
-  # prod-lb-zone-id               = 
-  # stage-lb-dns-name             = 
-  # stage-lb-zone-id              =  
+  prod-lb-dns-name              = module.prod_lb.prod-dns-name
+  prod-lb-zone-id               = module.prod_lb.prod-zone-id
+  stage-lb-dns-name             = module.stage_lb.stage-dns-name
+  stage-lb-zone-id              = module.stage_lb.stage-zone-id
 }
-  
+
+# create productn_lb
+module "prod_lb" {
+  source          = "./module/prod_lb"
+  subnets         = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  sg              = module.vpc.master_sg_id
+  vpc_id          = module.vpc.vpc_id
+  vpc             = module.vpc.keypair
+  certificate_arn = module.ssl-certf
+  instance1       = module.worker_node.worker_ip[0]
+  instance2       = module.worker_node.worker_ip[1]
+  instance3       = module.worker_node.worker_ip[2]
+}
+
+# create stage_lb
+module "stage_lb" {
+  source          = "./module/stage_lb"
+  subnets         = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  sg              = module.vpc.master_sg_id
+  vpc_id          = module.vpc.vpc_id
+  vpc             = module.vpc.keypair
+  certificate_arn = module.ssl-certf
+  instance1       = module.worker_node.worker_ip[0]
+  instance2       = module.worker_node.worker_ip[1]
+  instance3       = module.worker_node.worker_ip[2]
+}
