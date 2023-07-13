@@ -21,34 +21,22 @@ output "haproxy2" {
 }
 
 output "prometheus-lb" {
-  value = module.prometheus.prometheus-lb
-}
-
-output "prometheus-tg" {
-  value = module.prometheus.prometheus-tg
-}
-
-output "prometheus-listener1" {
-  value = module.prometheus.prometheus-listener1
+  value = module.prometheus_lb.prometheus-lb
 }
 
 output "grafana-lb" {
-  value = module.grafana.grafana-lb
+  value = module.grafana_lb.grafana-lb
 }
 
-
-output "grafana-tg" {
-  value = module.grafana.grafana-tg
+output "prod_lb" {
+  value = module.prod_lb.prod-zone-id
 }
-
-output "grafana-listener1" {
-  value = module.grafana.grafana-listener1
+output "prod-dns_name" {
+  value = module.prod_lb.prod-dns-name
 }
-
-output "grafana-listener2" {
-  value = module.grafana.grafana-listener2
+output "stage_lb" {
+  value = module.stage_lb.stage-zone-id
 }
-
-output "grafana-attachment" {
-  value = module.grafana.grafana-attachment
+output "stage-dns_name" {
+  value = module.stage_lb.stage-dns-name
 }

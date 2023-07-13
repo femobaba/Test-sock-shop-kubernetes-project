@@ -29,6 +29,16 @@ resource "aws_subnet" "pub_sn2" {
   }
 }
 
+#create public subnet 3
+resource "aws_subnet" "pub_sn3" {
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.pub_sn3_cidr_block
+  availability_zone = var.az3
+  tags = {
+    Name = var.pub_sn3_name
+  }
+}
+
  #create private subnet 1
 resource "aws_subnet" "prt_sn1" {
   vpc_id            = aws_vpc.vpc.id
@@ -140,6 +150,12 @@ resource "aws_route_table_association" "pub_rta1" {
 # Route table association for public subnet 2
 resource "aws_route_table_association" "pub_rta2" {
   subnet_id      = aws_subnet.pub_sn2.id
+  route_table_id = aws_route_table.pub_RT.id
+}
+
+# Route table association for public subnet 3
+resource "aws_route_table_association" "pub_rta3" {
+  subnet_id      = aws_subnet.pub_sn3.id
   route_table_id = aws_route_table.pub_RT.id
 }
 

@@ -1,20 +1,7 @@
 output "prometheus-lb" {
-    value = aws_lb.prometheus-lb
+    value = aws_lb.prometheus-lb.dns_name
 }
 
-output "prometheus-tg" {
-    value = aws_lb_target_group.prometheus-tg
-}
-
-output "promethrus-listener1" {
-    value = aws_lb_listener.prometheus-listener1
-}
-
-output "prometheus-listener1" {
-    value = aws_lb_listener.prometheus-listener2
-}
-
-output "prometheus-attachment" {
-    value = aws_lb_target_group_attachment.prometheus-attachment
-  
+output "prometheus-zone_id" {
+    value = aws_lb.prometheus-lb.zone_id
 }
