@@ -19,6 +19,15 @@ output "haproxy1" {
 output "haproxy2" {
   value = module.haproxy-servers.prod_HAProxy-backup_IP
 }
+
+output "prometheus-lb" {
+  value = module.prometheus_lb.prometheus-lb
+}
+
+output "grafana-lb" {
+  value = module.grafana_lb.grafana-lb
+}
+
 output "prod_lb" {
   value = module.prod_lb.prod-zone-id
 }

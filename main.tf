@@ -87,14 +87,14 @@ module "ansible" {
   ansible-sg-id  = module.vpc.ansible_sg_id
   keys           = module.vpc.keypair
   prv_key        = module.vpc.private-key
-  HAproxy1_IP    = module.haproxy-servers.HAproxy_private_IP
-  HAproxy2_IP    = module.haproxy-servers.HAproxybackup_private_IP
-  master1_IP     = module.master-nodes.master-node-ip[0]
-  master2_IP     = module.master-nodes.master-node-ip[1]
-  master3_IP     = module.master-nodes.master-node-ip[2]
-  worker1_IP     = module.worker-nodes.worker-node-ip[0]
-  worker2_IP     = module.worker-nodes.worker-node-ip[1]
-  worker3_IP     = module.worker-nodes.worker-node-ip[2]
+  HAproxy1_IP    = module.haproxy-servers.prod_HAProxy_IP
+  HAproxy2_IP    = module.haproxy-servers.prod_HAProxy-backup_IP
+  master1_IP     = module.master_node.master_ip[0]
+  master2_IP     = module.master_node.master_ip[1]
+  master3_IP     = module.master_node.master_ip[2]
+  worker1_IP     = module.worker_node.worker_ip[0]
+  worker2_IP     = module.worker_node.worker_ip[1]
+  worker3_IP     = module.worker_node.worker_ip[2]
   bastion-host   = module.bastion.bastion-ip
   ansible_server = "${local.project-name}-ansible-server"
 }
@@ -105,7 +105,7 @@ module "master_node" {
   ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
   instance_type  = "t2.medium"
   master-node-sg = module.vpc.master_sg_id
-  subnet_id      = module.vpc.pubsub1_id
+  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
   keypair_name   = module.vpc.keypair
   instance_count = 3
   instance_name  = "${local.project-name}-master_node"
@@ -138,10 +138,10 @@ module "route53" {
   prometheus_domain_hosted_zone = "prometheus.praisepeace.link"
   stage_domain_hosted_zone      = "stage.praisepeace.link"
   prod_domain_name              = "prod.praisepeace.link"
-  # prometheus-lb-dns-name        = 
-  # prometheus-lb-zone-id         = 
-  # grafana-lb-dns-name           = 
-  # grafana-lb-zone-id            = 
+  prometheus-lb-dns-name        = module.prometheus_lb.prometheus-lb
+  prometheus-lb-zone-id         = module.prometheus_lb.prometheus-zone_id
+  grafana-lb-dns-name           = module.grafana_lb.grafana-lb
+  grafana-lb-zone-id            = module.grafana_lb.grafana-zone_id
   prod-lb-dns-name              = module.prod_lb.prod-dns-name
   prod-lb-zone-id               = module.prod_lb.prod-zone-id
   stage-lb-dns-name             = module.stage_lb.stage-dns-name
@@ -155,7 +155,7 @@ module "prod_lb" {
   sg              = module.vpc.master_sg_id
   vpc_id          = module.vpc.vpc_id
   vpc             = module.vpc.keypair
-  certificate_arn = module.ssl-certf
+  certificate_arn = module.route53.k8s-cert
   instance1       = module.worker_node.worker_ip[0]
   instance2       = module.worker_node.worker_ip[1]
   instance3       = module.worker_node.worker_ip[2]
@@ -168,8 +168,40 @@ module "stage_lb" {
   sg              = module.vpc.master_sg_id
   vpc_id          = module.vpc.vpc_id
   vpc             = module.vpc.keypair
-  certificate_arn = module.ssl-certf
+  certificate_arn = module.route53.k8s-cert
   instance1       = module.worker_node.worker_ip[0]
   instance2       = module.worker_node.worker_ip[1]
   instance3       = module.worker_node.worker_ip[2]
+}
+
+# create prometheus_lb
+module "prometheus_lb" {
+  source = "./module/prometheus"
+  prometheus_sg_name = module.vpc.master_sg_id
+  subnets = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  instance = module.worker_node.worker_ip
+  vpc_id = module.vpc.vpc_id
+  acm_certificate = module.route53.k8s-cert
+}
+
+# create grafana_lb
+module "grafana_lb" {
+  source = "./module/grafana"
+  grafana_sg_name = module.vpc.master_sg_id
+  subnets = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  instance = module.worker_node.worker_ip
+  vpc_id = module.vpc.vpc_id
+  acm_certificate = module.route53.k8s-cert
+}
+
+# create worker_node
+module "worker_node" {
+  source = "./module/worker_node"
+  ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
+  instance_type  = "t2.medium"
+  worker-node-sg = module.vpc.master_sg_id
+  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id] 
+  keypair_name   = module.vpc.keypair
+  instance_count = 3
+  instance_name  = "${local.project-name}-worker_node"
 }
