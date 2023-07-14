@@ -62,7 +62,7 @@ alias {
 # CREATE CERTIFICATE WHICH IS DEPENDENT ON HAVING A DOMAIN NAME
 resource "aws_acm_certificate" "k8s-cert" {
   domain_name       = var.domain_name
-  subject_alternative_names = var.domain_name2
+  subject_alternative_names = [var.domain_name2]
   validation_method = "DNS"
 
   tags = {
