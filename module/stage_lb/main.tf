@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "stage-tg" {
   name     = "stage-tg"
   port     = 30002
   protocol = "HTTP"
-  vpc_id   = var.vpc.id
+  vpc_id   = var.vpc_id
   health_check {
     healthy_threshold   = 3
     unhealthy_threshold = 3

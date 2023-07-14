@@ -40,7 +40,7 @@ resource "aws_lb_listener" "prometheus-listener2" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.acm_certificate.arn
+  certificate_arn   = "${var.acm_certificate}"
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.prometheus-tg.arn

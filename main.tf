@@ -64,6 +64,7 @@ module "jenkins" {
   jenkins_name     = "${local.project-name}-jenkins"
   jenkins_sg       = module.vpc.jenkins_sg_id
   elb_name         = "${local.project-name}-elb"
+  subnet_id2       = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
 }
 
 #bastion-host module
@@ -131,9 +132,9 @@ module "haproxy-servers" {
 }
 
 module "route53" {
-  source       = "./module/route_53"
-  domain_name  = "praisepeace.link"
-  domain_name2 = "*.praisepeace.link"
+  source                        = "./module/route_53"
+  domain_name                   = "praisepeace.link"
+  domain_name2                  = "*.praisepeace.link"
   grafana_domain_hosted_zone    = "grafana.praisepeace.link"
   prometheus_domain_hosted_zone = "prometheus.praisepeace.link"
   stage_domain_hosted_zone      = "stage.praisepeace.link"
@@ -156,9 +157,9 @@ module "prod_lb" {
   vpc_id          = module.vpc.vpc_id
   vpc             = module.vpc.keypair
   certificate_arn = module.route53.k8s-cert
-  instance1       = module.worker_node.worker_ip[0]
-  instance2       = module.worker_node.worker_ip[1]
-  instance3       = module.worker_node.worker_ip[2]
+  instance1       = module.worker_node.worker_id[0]
+  instance2       = module.worker_node.worker_id[1]
+  instance3       = module.worker_node.worker_id[2]
 }
 
 # create stage_lb
@@ -169,38 +170,38 @@ module "stage_lb" {
   vpc_id          = module.vpc.vpc_id
   vpc             = module.vpc.keypair
   certificate_arn = module.route53.k8s-cert
-  instance1       = module.worker_node.worker_ip[0]
-  instance2       = module.worker_node.worker_ip[1]
-  instance3       = module.worker_node.worker_ip[2]
+  instance1       = module.worker_node.worker_id[0]
+  instance2       = module.worker_node.worker_id[1]
+  instance3       = module.worker_node.worker_id[2]
 }
 
 # create prometheus_lb
 module "prometheus_lb" {
-  source = "./module/prometheus"
+  source             = "./module/prometheus"
   prometheus_sg_name = module.vpc.master_sg_id
-  subnets = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
-  instance = module.worker_node.worker_ip
-  vpc_id = module.vpc.vpc_id
-  acm_certificate = module.route53.k8s-cert
+  subnets            = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  instance           = module.worker_node.worker_id
+  vpc_id             = module.vpc.vpc_id
+  acm_certificate    = module.route53.k8s-cert
 }
 
 # create grafana_lb
 module "grafana_lb" {
-  source = "./module/grafana"
+  source          = "./module/grafana"
   grafana_sg_name = module.vpc.master_sg_id
-  subnets = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
-  instance = module.worker_node.worker_ip
-  vpc_id = module.vpc.vpc_id
+  subnets         = [module.vpc.pubsub1_id, module.vpc.pubsub2_id, module.vpc.pubsub3_id]
+  instance        = module.worker_node.worker_id
+  vpc_id          = module.vpc.vpc_id
   acm_certificate = module.route53.k8s-cert
 }
 
 # create worker_node
 module "worker_node" {
-  source = "./module/worker_node"
+  source         = "./module/worker_node"
   ubuntu_ami     = "ami-0ecc74eca1d66d8a6"
   instance_type  = "t2.medium"
   worker-node-sg = module.vpc.master_sg_id
-  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id] 
+  subnet_id      = [module.vpc.prtsub1_id, module.vpc.prtsub2_id, module.vpc.prtsub3_id]
   keypair_name   = module.vpc.keypair
   instance_count = 3
   instance_name  = "${local.project-name}-worker_node"
