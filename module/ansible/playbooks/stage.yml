@@ -1,26 +1,25 @@
 ---
  - hosts: main_master
    become: true
-   vars_files:
-    - ansible_vars_file.yml
+   
    tasks:
 
     - name: Updating Application Repo
-      shell: rm -rf Sock-Shop-Microservices-Kubernetes-Project-US-Team-APPLICATION
+      shell: rm -rf US-Team-Sock-Shop-App-Repo
       ignore_errors: yes
       args:
         chdir: /home/ubuntu 
 
     - name: Cloning Application Repo
-      shell: git clone https://{{ username }}:{{ password }}@github.com/CloudHight/Sock-Shop-Microservices-Kubernetes-Project-US-Team-APPLICATION.git
+      shell: git clone https://github.com/CloudHight/US-Team-Sock-Shop-App-Repo.git
 
     - name: Deleting Previous Deployment to stage-shop
       shell: kubectl --kubeconfig=/home/ubuntu/.kube/config delete -f staging-complete.yaml
       ignore_errors: yes
       args:
-        chdir: Sock-Shop-Microservices-Kubernetes-Project-US-Team-APPLICATION/deploy/kubernetes  
+        chdir: US-Team-Sock-Shop-App-Repo/deploy/kubernetes  
 
     - name: Deploying Latest Features to stage-shop
       shell: kubectl --kubeconfig=/home/ubuntu/.kube/config apply -f staging-complete.yaml
       args:
-        chdir: Sock-Shop-Microservices-Kubernetes-Project-US-Team-APPLICATION/deploy/kubernetes
+        chdir: US-Team-Sock-Shop-App-Repo/deploy/kubernetes
