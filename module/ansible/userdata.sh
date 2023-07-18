@@ -39,14 +39,14 @@ sudo echo "${worker2_IP} ansible_ssh_private_key_file=/home/ubuntu/PACUJPEU1-key
 sudo echo "${worker3_IP} ansible_ssh_private_key_file=/home/ubuntu/PACUJPEU1-key" >> /etc/ansible/hosts 
 
 # # Executing all playbooks
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/installation.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/keepalived.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/main_master.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/member_master.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/worker.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/haproxy.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/stage.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/prod.yml" ubuntu
-# sudo su -c "ansible-playbook /home/ubuntu/playbooks/monitoring.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/installation.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/keepalived.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/main_master.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/member_master.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/worker.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/haproxy.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/stage.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/prod.yml" ubuntu
+sudo su -c "ansible-playbook /home/ubuntu/playbooks/monitoring.yml" ubuntu
 
 sudo hostnamectl set-hostname Ansible
